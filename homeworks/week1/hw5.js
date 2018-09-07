@@ -1,7 +1,7 @@
-function join(str, concatStr) {
+function join(arr, concatStr) {
 	var rtnStr = "";
-	for(var i = 0; i < str.length; i++){
-		rtnStr = rtnStr.length > 0 ? rtnStr + concatStr + str[i].toString() : str[i].toString();
+	for(var i = 0; i < arr.length; i++){
+		rtnStr = i != 0 ? rtnStr + concatStr + arr[i].toString() : arr[i].toString(); 	
 	}
 	return rtnStr;
 }
