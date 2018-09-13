@@ -9,9 +9,11 @@ function add(a, b) {
 		carryNum = sum >= 10 ? 1 : 0;
 		sum = sum >= 10 ? sum - 10 : sum;
 		rtnStr = sum.toString() + rtnStr;
+		if(i == largerLength && carryNum == 1){
+			rtnStr = carryNum + rtnStr;
+		}
 	}
 	return rtnStr;
 }
 
 module.exports = add;
-console.log(add('1121241294239120391031', '35906838359835'))
