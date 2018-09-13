@@ -1,8 +1,11 @@
 function add(a, b) {
 	var rtnStr = "";
 	var carryNum = 0;
-	for(var i = a.length - 1; i >= 0; i--){
-		var sum = Number(a[i]) + Number(b[i]) + carryNum;
+	var largerLength = a.length > b.length ? a.length : b.length;
+	for(var i = 1; i <= largerLength; i++){
+		var aNum = a.length-i >= 0 ? Number(a[a.length-i]) : 0;
+		var bNum = b.length-i >= 0 ? Number(b[b.length-i]) : 0;
+		var sum = aNum + bNum + carryNum;
 		carryNum = sum >= 10 ? 1 : 0;
 		sum = sum >= 10 ? sum - 10 : sum;
 		rtnStr = sum.toString() + rtnStr;
@@ -11,3 +14,4 @@ function add(a, b) {
 }
 
 module.exports = add;
+console.log(add('1121241294239120391031', '35906838359835'))
