@@ -1,0 +1,56 @@
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=dervice-width,initial-scale=1">
+	<title>化繁為簡</title>
+	<style type="text/css">
+		.container{
+			width: 500px;
+			display: flex;
+			flex-wrap: wrap;
+		}
+		.box{
+			border: 1px solid;
+			margin: 5px;
+			width: 100px;
+			height: 100px;
+			border-radius: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+	</style>
+	<script type="text/javascript" src="index.js"></script>
+	<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", () => {
+			document.querySelectorAll(".box").forEach((element, index, array) => {
+				let classNmae = "test"+element.dataset.index;
+				element.classList.add(classNmae);
+				element.innerText = "class="+classNmae;
+			});
+		});
+		function setElementHide(){
+			let elementName = q("#elementName").value;
+			q(elementName).style.display = "none";
+		}
+		function setElementShow(){
+			let elementName = q("#elementName").value;
+			q(elementName).style.display = "";
+		}
+	</script>
+</head>
+<body>
+	請輸入要控制的元素名稱：<input id="elementName" type="text"><button onclick="setElementHide()">隱藏</button><button onclick="setElementShow()">顯示</button>
+	<div class="container">
+		<div class="box" data-index="1"></div>
+		<div class="box" data-index="2"></div>
+		<div class="box" data-index="3"></div>
+		<div class="box" data-index="4"></div>
+		<div class="box" data-index="5"></div>
+		<div class="box" data-index="6"></div>
+		<div class="box" data-index="7"></div>
+		<div class="box" data-index="8"></div>
+		<div class="box" data-index="9"></div>
+	</div>
+</body>
+</html>
