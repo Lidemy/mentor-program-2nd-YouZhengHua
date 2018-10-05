@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=dervice-width,initial-scale=1">
+	<title>簡易計算機</title>
+	<style type="text/css">
+		body{
+			margin: 0px;
+		}
+		.main{
+			margin: 0 auto;
+			border: 1px solid;
+			width: 300px;
+			border-radius: 4px;
+		}
+		.main__display{
+			margin: 5px;
+			height: 40px;
+			padding: 5px;
+			border-radius: 4px;
+			box-sizing: border-box;
+			border: 1px solid;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			font-size: 30px;
+		}
+		.main__button--row{
+			margin: 5px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+		.main__button{
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			width: 20%;
+			height: 30px;
+			text-align: center;
+			border: 1px solid rgba(0, 0, 0, 0.4);
+			border-radius: 4px;
+			transition: all 0.3s;
+			cursor: pointer;
+		}
+		.main__button:hover{
+			border: 1px solid rgba(0, 0, 0, 0.8);
+		}
+		.main__button--special{
+			background: rgba(255, 98, 0, 0.8);
+			width: 46.5%;
+		}
+		.main__button--special:hover{
+			background: rgba(255, 98, 0, 1);
+		}
+	</style>
+	<script type="text/javascript">
+		let tmpNum1 = undefined;
+		let tmpNum2 = undefined;
+		let operator = undefined;
+		let numLock = false;
+
+		function buttonClick(element){
+			let btnVal = element.innerHTML;
+			if(btnVal === "AC"){
+				let tmpNum1 = undefined;
+				let tmpNum2 = undefined;
+				let operator = undefined;
+				setDisplayValue(0);
+			}
+			else if(btnVal === "÷"){
+				tmpNum1 = Number(getDisplayValue());
+				operator = btnVal;
+				numLock = false;
+			}
+			else if(btnVal === "×"){
+				tmpNum1 = Number(getDisplayValue());
+				operator = btnVal;
+				numLock = false;
+			}
+			else if(btnVal === "-"){
+				tmpNum1 = Number(getDisplayValue());
+				operator = btnVal;
+				numLock = false;
+			}
+			else if(btnVal === "+"){
+				tmpNum1 = Number(getDisplayValue());
+				operator = btnVal;
+				numLock = false;
+			}
+			else if(btnVal === "="){
+				let rtnNum;
+				tmpNum2 = Number(getDisplayValue());
+				if(operator === "÷"){
+					rtnNum = tmpNum1 / tmpNum2;
+				}
+				else if(operator === "×"){
+					rtnNum = tmpNum1 * tmpNum2;
+				}
+				else if(operator === "-"){
+					rtnNum = tmpNum1 - tmpNum2;
+				}
+				else if(operator === "+"){
+					rtnNum = tmpNum1 + tmpNum2;
+				}
+				numLock = false;
+				tmpNum1 = rtnNum;
+				setDisplayValue(rtnNum.toString());
+			}
+			else if(btnVal === "."){
+				if(!numLock){
+					setDisplayValue("0.");
+					numLock = true;
+				}
+				else if(getDisplayValue().indexOf(".") == -1){
+					setDisplayValue(getDisplayValue() + ".");
+					numLock = true;
+				}
+			}
+			else{
+				if(!numLock || getDisplayValue() === "0"){
+					setDisplayValue(btnVal);
+					numLock = true;
+				}
+				else{
+					setDisplayValue(getDisplayValue() + btnVal);
+				}
+			}
+			
+		}
+		function getDisplayValue(){
+			return document.querySelector(".main__display").innerHTML;
+		}
+		function setDisplayValue(str){
+			document.querySelector(".main__display").innerHTML = str;
+		}
+	</script>
+</head>
+<body>
+	<h2 style="text-align: center;">簡易計算機</h2>
+	<div class="main">
+		<div class="main__display">0</div>
+		<div class="main__controller">
+			<div class="main__button--row">
+				<div class="main__button" onclick="buttonClick(this)">AC</div>
+				<div class="main__button" onclick="buttonClick(this)">÷</div>
+			</div>
+			<div class="main__button--row">
+				<div class="main__button" onclick="buttonClick(this)">7</div>
+				<div class="main__button" onclick="buttonClick(this)">8</div>
+				<div class="main__button" onclick="buttonClick(this)">9</div>
+				<div class="main__button" onclick="buttonClick(this)">×</div>
+			</div>
+			<div class="main__button--row">
+				<div class="main__button" onclick="buttonClick(this)">4</div>
+				<div class="main__button" onclick="buttonClick(this)">5</div>
+				<div class="main__button" onclick="buttonClick(this)">6</div>
+				<div class="main__button" onclick="buttonClick(this)">-</div>
+			</div>
+			<div class="main__button--row">
+				<div class="main__button" onclick="buttonClick(this)">1</div>
+				<div class="main__button" onclick="buttonClick(this)">2</div>
+				<div class="main__button" onclick="buttonClick(this)">3</div>
+				<div class="main__button" onclick="buttonClick(this)">+</div>
+			</div>
+			<div class="main__button--row">
+				<div class="main__button" onclick="buttonClick(this)">0</div>
+				<div class="main__button" onclick="buttonClick(this)">.</div>
+				<div class="main__button main__button--special" onclick="buttonClick(this)">=</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

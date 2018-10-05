@@ -1,0 +1,113 @@
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=dervice-width,initial-scale=1">
+	<title>串接API測試</title>
+	<style type="text/css">
+		body {
+			margin: 50px 0px 0px 0px;
+			background-image: url("backgroundImg.jpg");
+			background-repeat:no-repeat;
+			background-attachment: fixed;
+			background-size: 100%;
+			color: white;
+		}
+		.preview {
+			margin: 0px auto;
+			max-width: 1400px;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+		.preview__viewer {
+			width: 320px;
+			margin: 10px;
+			background-color: #5b5b5b;
+			border: 2px solid black;
+		}
+		.preview__liveImg{
+			display: block;
+		}
+		.preview__info {
+			display: flex;
+			flex-wrap: nowrap;
+			padding: 10px
+		}
+		.preview__nameAndTitle{
+			display: flex;
+			flex-flow: column wrap;
+			justify-content: space-around;
+		}
+		.preview__logo{
+			margin-right: 10px;
+		}
+		.preview__logo > img{
+			width: 60px;
+		}
+	</style>
+	<script type="text/javascript">
+
+		function getTwitchLive(){
+			var httpRequest = new XMLHttpRequest();
+			httpRequest.open('GET', 'https://api.twitch.tv/kraken/streams/?game=League%20of%20Legends&limit=20');
+			httpRequest.setRequestHeader('Accept', 'application/vnd.twitchtv.v5+json');
+			httpRequest.setRequestHeader('Client-ID', 'lmm9wtat2k144soztf2pslqw6tvsuj');
+			httpRequest.onload = () => {
+				if(httpRequest.status >= 200 && httpRequest.status < 400){
+					let reObj = JSON.parse(httpRequest.responseText);
+					reObj.streams.forEach((element, index, array) => {
+						let previewViewer = document.createElement("div");
+						previewViewer.classList.add("preview__viewer");
+
+						let previewLiveImg = document.createElement("div");
+						previewLiveImg.classList.add("preview__liveImg");
+						let liveImg = document.createElement("img");
+						liveImg.setAttribute("src", reObj.streams[index].preview.medium);
+						previewLiveImg.appendChild(liveImg);
+
+						let previewInfo = document.createElement("div");
+						previewInfo.classList.add("preview__info");
+
+						let previewLogo = document.createElement("div");
+						previewLogo.classList.add("preview__logo");
+						let logo = document.createElement("img");
+						logo.setAttribute("src", reObj.streams[index].channel.logo);
+						previewLogo.appendChild(logo);
+
+						let previewNameAndTitle = document.createElement("div");
+						previewNameAndTitle.classList.add("preview__nameAndTitle");
+
+						let previewTitle = document.createElement("div");
+						previewTitle.innerText = reObj.streams[index].channel.status;
+						previewTitle.classList.add("preview__title");
+
+						let previewName = document.createElement("div");
+						previewName.innerText = reObj.streams[index].channel.display_name;
+						previewName.classList.add("preview__name");
+
+						previewNameAndTitle.appendChild(previewTitle);
+						previewNameAndTitle.appendChild(previewName);
+
+						previewInfo.appendChild(previewLogo);
+						previewInfo.appendChild(previewNameAndTitle);
+						previewViewer.appendChild(previewLiveImg);
+						previewViewer.appendChild(previewInfo);
+						document.querySelector(".preview").appendChild(previewViewer);
+					});
+				}
+				else{
+					document.querySelector(".preview").innerText = httpRequest.status + " 錯誤。"
+				}
+			}
+			httpRequest.onerror = () => {
+				document.querySelector(".preview").innerText = httpRequest.status + " 錯誤。"
+			}
+			httpRequest.send();
+		}
+
+	</script>
+</head>
+<body onload="getTwitchLive()">
+	<div class="preview"></div>
+</body>
+</html>
