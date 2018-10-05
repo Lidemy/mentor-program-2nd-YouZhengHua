@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=dervice-width,initial-scale=1">
+	<title>程式導師實驗計畫第二期報名表單</title>
+	<style type="text/css">
+		body{
+			margin: 0px;
+			background-color: #33CCFF;
+		}
+		.topBgImg{
+			background-color: rgb(255, 189, 97);
+			height: 200px;
+		}
+		.main{
+			margin: 0px auto;
+			max-width: 800px;
+			position: relative;
+			top: -100px;
+		}
+		.main__from{
+			border-top: 10px solid #FF8800;
+			background-color: #FFFFFF;
+			padding: 30px 10px;
+			box-sizing: border-box;;
+		}
+		.main__herder .title{
+			font-size: 36px;
+			margin-bottom: 10px 
+		}
+		.main__issue .title{
+			font-size: 24px;
+			margin-bottom: 10px 
+		}
+		.main__issue--required .title:after{
+			content: "*";
+			color: red;
+		}
+		.main__issue--text{
+			outline: none;
+			background-color: transparent;
+			font-size: 16px;
+			margin: 10px 0px;
+			border: 0px;
+			width: 60%;
+			border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+			transition: border 0.3s;
+		}
+		.main__issue--text:focus{
+			border-bottom: 2px solid rgba(189, 94, 0, 1);
+		}
+		.main__container{
+			padding: 20px 20px;
+		}
+		.main__container:not(:first-child){
+			margin-top: 10px;
+		}
+		.main__footer{ 
+			margin-top: 10px;
+			text-align: center;
+		}
+		.main__submit{
+			display: inline-block;
+			padding: 10px 20px;
+			border-radius: 4px;
+			transition: all 0.3s;
+			cursor: pointer;
+			background-color: #00BBFF;
+		}
+		.main__submit:active{
+			background-color: #0066FF;
+		}
+		.main__errMsg{
+			margin-top: 5px;
+			color: red;
+		}
+	</style>
+	<script type="text/javascript">
+		function validate(){
+			document.querySelectorAll(".main__issue--required").forEach((element) =>{
+				let errMsg = "safe";
+				element.querySelectorAll("input").forEach((element, index, array) =>{
+					let inputType = element.getAttribute("type");
+
+					if(validateTextRequired(element.value)){
+						errMsg = "這是必填問題";
+					}
+					else{
+						if(inputType === "email"){
+							if(validateEmail(element.value)){
+								errMsg = "請輸入有效的電子郵件地址";
+							}
+						}
+						if(inputType === "radio"){
+							if(validateRadio(array)){
+								errMsg = "這是必填問題";
+							}
+						}
+					}
+				});
+				if(errMsg === "safe"){
+					element.style.cssText = "background-color:transparent;";
+					element.querySelector(".main__errMsg").innerHTML = "";
+				}
+				else{
+					element.style.cssText = "background-color:rgb(255, 179, 179);";
+					element.querySelector(".main__errMsg").innerHTML = errMsg;
+				}
+			});
+		}
+		function validateTextRequired(str){
+			return str === "";
+		}
+		function validateEmail(str){
+			let regMail = /^[\w\.]+@\w+\.\w/;
+			return !regMail.test(str);
+		}
+		function validateRadio(array){
+			let rtnBool = true;
+			for(let i = 0; i < array.length; i++){
+				if(array[i].checked){
+					return false;
+				}
+			}
+			return rtnBool;
+		}
+		function validateOnChange(element){
+			let errMsg = "safe";
+			let parElement = element.parentElement;
+			let inputType = element.getAttribute("type");
+			if(validateTextRequired(element.value)){
+				errMsg = "這是必填問題";
+			}
+			else{
+				if(inputType === "email"){
+					if(validateEmail(element.value)){
+						errMsg = "請輸入有效的電子郵件地址";
+					}
+				}
+			}
+			if(errMsg === "safe"){
+				parElement.style.cssText = "background-color:transparent;";
+				parElement.querySelector(".main__errMsg").innerHTML = "";
+			}
+			else{
+				parElement.style.cssText = "background-color:rgb(255, 179, 179);";
+				parElement.querySelector(".main__errMsg").innerHTML = errMsg;
+			}
+		}
+	</script>
+</head>
+<body>
+	<div class="topBgImg"></div>
+	<div class="main">
+		<div class="main__from">
+			<div class="main__container main__herder">
+				<div class="title">程式導師實驗計畫第二期報名表單</div>
+				<div>詳情請參考：<a href="https://medium.com/hulis-blog/mentor-program-s2-f876c4e13d3b">https://medium.com/hulis-blog/mentor-program-s2-f876c4e13d3b</a></div>
+				<div>填完之後請務必按照文章內的說明再寄信給我，才算報名成功喔</div>
+				<div style="color:red; margin-top:10px;">*必填</div>
+			</div>
+			<div class="main__container main__issue main__issue--required">
+				<div class="title">電子郵件地址</div>
+				<input type="email" name="" placeholder="你的電子郵件" class="main__issue--text main__issue--email" onchange="validateOnChange(this)">
+				<div class="main__errMsg"></div>
+			</div>
+			<div class="main__container main__issue main__issue--required">
+				<div class="title">暱稱</div>
+				<input type="text" placeholder="你的回答" class="main__issue--text" onchange="validateOnChange(this)">
+				<div class="main__errMsg"></div>
+			</div>
+			<div class="main__container main__issue main__issue--required">
+				<div class="title">報名類型</div>
+				<input type="radio" name="singUpType" class="main__issue--radio" onchange="validateOnChange(this)">從零到一基礎班（一個月後開始收保證金 3000，淘汰不退還，結業後兩個月內找到工作付一個月半薪水，沒工作不用付）</br>
+				<input type="radio" name="singUpType" class="main__issue--radio" onchange="validateOnChange(this)">在職工程師加強班（一個月後開始收保證金 3000，兩個月時收學費 30000，被淘汰不退還）
+				<div class="main__errMsg"></div>
+			</div>
+			<div class="main__container main__issue main__issue--required" >
+				<div class="title">現在的職業</div>
+				<div>範例：學生、前端工程師、待業中、業務</div>
+				<input type="text" name="" placeholder="你的回答" class="main__issue--text" onchange="validateOnChange(this)">
+				<div class="main__errMsg"></div>
+			</div>
+			<div class="main__container main__issue main__issue--required">
+				<div class="title">是否有程式相關背景？</div>
+				<div>範例：無、高中時候學過C++、學過一點網頁前端、目前在資策會上課...</div>
+				<input type="text" name="" placeholder="你的回答" class="main__issue--text" onchange="validateOnChange(this)">
+				<div class="main__errMsg"></div>
+			</div>
+			<div class="main__container main__issue">
+				<div class="title">其他</div>
+				<div>任何你想說的</div>
+				<input type="text" name="" placeholder="你的回答" class="main__issue--text">
+				<div class="main__errMsg"></div>
+			</div>
+			<div class="main__container">
+				<div class="main__submit" onclick="validate()">提交</div>
+			</div>
+		</div>
+		<div class="main__footer">Google 並未認可或建立這項內容。 檢舉濫用情形 - 服務條款 - 其他條款</div>
+	</div>
+</body>
+</html>
