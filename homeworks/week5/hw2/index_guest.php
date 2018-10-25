@@ -31,6 +31,7 @@
 			$index++;
 			$page = ceil($index / 10);
 	?>
+	<input type="hidden" id="pages" value="<?php echo $pages; ?>">
 	<div class="main__comment <?php echo 'main__comment-page'.$page; ?>">
 		<?php
 			require('get_comments.php');
@@ -55,7 +56,6 @@
 		$conn->close();
 	?>
 	<div class="main__page">
-		<form action="index.php"></form>
 	</div>
 </div>
 <script src="myJS.js"></script>
