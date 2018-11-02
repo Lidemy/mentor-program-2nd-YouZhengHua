@@ -1,8 +1,10 @@
 <?php
 	require_once('conn.php');
 	$commentId = $_POST['commentId'];
-	$sql = "DELETE FROM marin_comments WHERE id IN ( SELECT * FROM (SELECT id FROM marin_comments WHERE id = '$commentId' OR parent_id = '$commentId') p )";
-	$conn->query($sql);
+	$stmt = $conn->prepare("DELETE FROM marin_comments WHERE id = ? OR parent_id = ?");
+	$stmt->bind_param("ii", $commentId, $commentId);
+	$stmt->execute();
+	$stmt->close();
 	$conn->close();
 
 	$url = "index.php";
