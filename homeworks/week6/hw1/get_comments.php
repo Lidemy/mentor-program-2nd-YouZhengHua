@@ -31,9 +31,11 @@
 <?php
 }
 	$parentId = $row['id'];
-	$sql = "SELECT a.id, a.crt_time, a.contnet, a.crt_user, CASE WHEN b.username IS NULL THEN CONCAT(a.crt_user, ' ( 遊客 ) ') ELSE b.nickname END AS nickname, b.username FROM marin_comments a LEFT JOIN marin_users b ON a.crt_user = b.username WHERE a.parent_id = $parentId";
-	$subResult = $conn->query($sql);
-
+	$stmt = $conn->prepare("SELECT a.id, a.crt_time, a.contnet, a.crt_user, CASE WHEN b.username IS NULL THEN CONCAT(a.crt_user, ' ( 遊客 ) ') ELSE b.nickname END AS nickname, b.username FROM marin_comments a LEFT JOIN marin_users b ON a.crt_user = b.username WHERE a.parent_id = ?");
+	$stmt->bind_param("i", $parentId);
+	$stmt->execute();
+	$subResult = $stmt->get_result();
+	$stmt->close();
 	while($subRow = $subResult->fetch_assoc()) {
 ?>
 	<div class="main__subpost <?php if($subRow['nickname'] === $row['nickname']){ echo " main__subpost--self";} ?>">

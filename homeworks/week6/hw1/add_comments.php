@@ -8,12 +8,17 @@
 	$sql = "";
 	if(isset($_POST['parentId'])){
 		$parentId = $_POST['parentId'];
-		$sql = "INSERT INTO marin_comments (crt_user, contnet, parent_id) SELECT b.username AS crt_user, '$contnet' AS contnet, '$parentId' AS parent_id FROM marin_users_certificate a JOIN marin_users b ON a.username = b.username WHERE a.id = '$tmpId'";
+		$stmt = $conn->prepare("INSERT INTO marin_comments (crt_user, contnet, parent_id) SELECT b.username AS crt_user, ? AS contnet, ? AS parent_id FROM marin_users_certificate a JOIN marin_users b ON a.username = b.username WHERE a.id = ?");
+		$stmt->bind_param("sis", $contnet, $parentId, $tmpId);
+		$stmt->execute();
+		$stmt->close();
 	}
 	else{
-		$sql = "INSERT INTO marin_comments (crt_user, contnet) SELECT b.username AS crt_user, '$contnet' AS contnet FROM marin_users_certificate a JOIN marin_users b ON a.username = b.username WHERE a.id = '$tmpId'";
+		$stmt = $conn->prepare("INSERT INTO marin_comments (crt_user, contnet) SELECT b.username AS crt_user, ? AS contnet FROM marin_users_certificate a JOIN marin_users b ON a.username = b.username WHERE a.id = ?");
+		$stmt->bind_param("ss", $contnet, $tmpId);
+		$stmt->execute();
+		$stmt->close();
 	}
-	$conn->query($sql);
 	$conn->close();
 
 	$url = "index.php";
