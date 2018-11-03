@@ -4,9 +4,12 @@
 	$nickname = "";
 	if(isset($_COOKIE["tmpId"])) {
 		$tmpId = $_COOKIE["tmpId"];
-		$sql = "SELECT b.* FROM marin_users_certificate a JOIN marin_users b ON a.username = b.username WHERE a.id = '$tmpId'";
-		$certificate = $conn->query($sql);
-		if($certificate && $certificate->num_rows === 1){
+		$stmt = $conn->prepare("SELECT b.* FROM marin_users_certificate a JOIN marin_users b ON a.username = b.username WHERE a.id = ?");
+		$stmt->bind_param("s", $tmpId);
+		$stmt->execute();
+		$certificate = $stmt->get_result();
+		$stmt->close();
+		if($certificate->num_rows === 1){
 			while($certificateRow = $certificate->fetch_assoc()) {
 				$userAccount = $certificateRow['username'];
 				$nickname = $certificateRow['nickname'];
@@ -57,8 +60,10 @@
 		</form>
 	</div>
 	<?php
-		$sql = "SELECT a.id, a.crt_time, a.contnet, a.crt_user, CASE WHEN b.username IS NULL THEN CONCAT(a.crt_user, ' ( 遊客 ) ') ELSE b.nickname END AS nickname FROM marin_comments a LEFT JOIN marin_users b ON a.crt_user = b.username WHERE parent_id IS NULL ORDER BY crt_time DESC";
-		$result = $conn->query($sql);
+		$stmt = $conn->prepare("SELECT a.id, a.crt_time, a.contnet, a.crt_user, CASE WHEN b.username IS NULL THEN CONCAT(a.crt_user, ' ( 遊客 ) ') ELSE b.nickname END AS nickname FROM marin_comments a LEFT JOIN marin_users b ON a.crt_user = b.username WHERE parent_id IS NULL ORDER BY crt_time DESC");
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$stmt->close();
 		$pages = ceil($result->num_rows / 10);
 		$index = 0;
 		while($row = $result->fetch_assoc()) {

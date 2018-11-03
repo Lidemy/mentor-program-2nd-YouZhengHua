@@ -3,8 +3,10 @@
 	$userAccount = $_POST['userAccount'];
 	$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 	$nickname = $_POST['nickname'];
-	$sql = "INSERT INTO marin_users (username, password, nickname) VALUES ('$userAccount', '$password', '$nickname')";
-	$result = $conn->query($sql);
+	$stmt = $conn->prepare("INSERT INTO marin_users (username, password, nickname) VALUES ('$userAccount', '$password', '$nickname')");
+	$stmt->bind_param("sss", $userAccount, $password, $nickname);
+	$stmt->execute();
+	$stmt->close();
 	$conn->close();
 	header('Location: index.php');
 ?>
