@@ -24,7 +24,7 @@
 			if($certificate->num_rows === 1){
 				while($certificateRow = $certificate->fetch_assoc()) {
 					$userAccount = $certificateRow['username'];
-					$nickname = $certificateRow['nickname'];
+					$nickname = $certificateRow['nickname'] === "" ? $userAccount : $certificateRow['nickname'];
 				}
 			}
 		}

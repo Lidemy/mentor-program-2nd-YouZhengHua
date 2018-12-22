@@ -39,7 +39,6 @@ function addSubComments(element){
 		},
 		success: function(resp) {
 			let res = JSON.parse(resp);
-			console.log(res);
 			if(res.rtnCde === "success"){
 				$(element).parents(".main__post").find(".main__post__subfrom").before(`
 				<div class="main__subpost main__subpost--self">
@@ -66,9 +65,9 @@ function addSubComments(element){
 								<button type="button" class="btn postAction__edit--show" value="edit">編輯</button>
 							</form>
 						</div>
-						<div class="postAction__del">
+						<div class="postAction__del postAction__del--sub">
 							<input type="hidden" name="commentId" value="${res.id}">
-							<button type="submit">刪除</button>
+							<button class="btn postAction__del--submit" value="del">刪除</button>
 						</div>
 					</div>
 				</div>`);
@@ -125,20 +124,23 @@ function addMainComments(element){
 								</div>
 								<div class="postAction__del">
 									<input type="hidden" name="commentId" value="${res.id}">
-									<button class="postAction__del--submit" value="del">刪除</button>
+									<button class="btn postAction__del--submit" value="del">刪除</button>
 								</div>
 							</div>
-						<div class="main__post__subfrom">
+						<div class="main__post__subfrom" style="display: none;">
 							<div class="main__post__subfrom--nickname">
 								${res.crt_user}
 							</div>
-							<div class="main__post__subfrom--textarea">
-								<textarea name="contnet" placeholder="留言內容"></textarea>
+							<div>
+								<textarea class="main__post__subfrom--textarea wt-90 margin-bot-10" name="contnet" placeholder="留言內容"></textarea>
 							</div>
 							<div>
-								<input type="button" value="留言">
+								<input class="btn btn-primary btn-lg" type="button" value="送出">
 							</div>
-							<input type="hidden" name="parentId" value="${res.parentId}">
+							<input type="hidden" name="parentId" value="${res.id}">
+						</div>
+						<div class="margin-top-10">
+							<input class="btn btn-primary subfromFrom--show" type="button" value="我要留言">
 						</div>
 					</div>
 				</div>`);
@@ -174,7 +176,10 @@ function delComments(element){
 				commentId: commentId
 			},
 			success: function(resp) {
-				$(delElement).parent("div").parent("div").remove();
+				let res = JSON.parse(resp);
+				if(res.rtnCde === "success"){
+					$(delElement).parent("div").parent("div").remove();
+				}
 			},
 			error: function() {
 				
