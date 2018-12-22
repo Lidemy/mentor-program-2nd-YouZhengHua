@@ -23,6 +23,16 @@
 		<div class="col-6 mx-auto text-center">
 			<h1 class="h3 mb-3 font-weight-normal">註冊</h1>
 			<div class="main__from">
+				
+				<?php
+					if(isset($_COOKIE["errMsg"])){
+				?>
+						<div class="alert alert-danger" role="alert"><?php echo $_COOKIE["errMsg"]; ?></div>
+				<?php		
+						setcookie("errMsg", "");
+					}
+				?>
+				
 				<form action="add_users.php" method="POST">
 					<div class="input-group">
 						<div class="input-group-prepend">

@@ -1,4 +1,4 @@
 <?php
-	setcookie("tmpId", "",time()+3600*24);
+	setcookie("tmpId", "");
 	header('Location: index.php');
 ?>
