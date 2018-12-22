@@ -15,31 +15,30 @@
 		$stmt->close();
 		if($result->num_rows === 1){
 			// 設定一個 24 小時之後會過期的 Cookie
-			while($row = $result->fetch_assoc()) {
-				$dbPassword = $row['password'];
-				if(password_verify($password, $dbPassword)){
-    				mt_srand((double)microtime()*10000);
-					$tmpId = password_hash(uniqid(rand(), true), PASSWORD_DEFAULT);
-					$username = $row['username'];
+			$row = $result->fetch_assoc();
+			$dbPassword = $row['password'];
+			if(password_verify($password, $dbPassword)){
 
-					// 先刪除舊有的 session id
-					$stmt = $conn->prepare("DELETE FROM marin_users_certificate WHERE username = ?");
-					$stmt->bind_param("s", $username);
-					$stmt->execute();
-					$stmt->close();
+				$tmpId = password_hash(uniqid(rand(mt_srand((double)microtime()*10000)), true), PASSWORD_DEFAULT);
+				$username = $row['username'];
 
-					// 再新增新的 session id
-					$stmt = $conn->prepare("INSERT INTO marin_users_certificate (id, username) VALUES (?, ?)");
-					$stmt->bind_param("ss", $tmpId, $username);
-					$stmt->execute();
-					$stmt->close();
+				// 先刪除舊有的 session id
+				$stmt = $conn->prepare("DELETE FROM marin_users_certificate WHERE username = ?");
+				$stmt->bind_param("s", $username);
+				$stmt->execute();
+				$stmt->close();
 
-					setcookie("tmpId", $tmpId, time()+3600*24);
-					header('Location: index.php');
-				}
-				else{
-					$errMsg = "密碼錯誤";
-				}
+				// 再新增新的 session id
+				$stmt = $conn->prepare("INSERT INTO marin_users_certificate (id, username) VALUES (?, ?)");
+				$stmt->bind_param("ss", $tmpId, $username);
+				$stmt->execute();
+				$stmt->close();
+
+				setcookie("tmpId", $tmpId, time()+3600*24);
+				header('Location: index.php');
+			}
+			else{
+				$errMsg = "密碼錯誤";
 			}
 		}
 		else{
@@ -71,7 +70,9 @@
 			<div class="main__from">
 				<?php
 					if($errMsg !== ""){
-						echo $errMsg;
+				?>
+						<div class="alert alert-danger" role="alert"><?php echo $errMsg; ?></div>
+				<?php
 					}
 				?>
 				<form method="POST">
