@@ -29,25 +29,30 @@
 			$stmt->close();
 
 			// 取得原始庫存資料
-			$stmt = $conn->prepare("SELECT quantity FROM marin_items WHERE id = ?");
+			$stmt = $conn->prepare("SELECT quantity FROM marin_items WHERE id = ? for update");
 			$stmt->bind_param("i", $order_item_id);
-			$stmt->execute();
-			$sqlResult = $stmt->get_result();
-			$result = $sqlResult->fetch_assoc();
-			$stmt->close();
+			if($stmt->execute()){
+				$sqlResult = $stmt->get_result();
+				$result = $sqlResult->fetch_assoc();
+				$stmt->close();
 
-			// 判斷更新後庫存是否為負數，如為負數則取消訂單。
-			$newQty = $result['quantity'] - $order_item_qty;
-			if($newQty < 0){
-				$_SESSION['ERROR_MSG'] = "訂單取消，庫存數量不得為負數。";
+				// 判斷更新後庫存是否為負數，如為負數則取消訂單。
+				if($result['quantity'] < $order_item_qty){
+					$_SESSION['ERROR_MSG'] = "訂單取消，庫存數量不得為負數。";
+					throw new Exception();
+				}
+
+				//更新庫存資料
+				$stmt = $conn->prepare("UPDATE marin_items SET quantity = quantity - ? WHERE id = ?");
+				$stmt->bind_param("ii", $order_item_qty, $order_item_id);
+				$stmt->execute();
+				$stmt->close();
+			}
+			else{
+				$_SESSION['ERROR_MSG'] = "系統錯誤 : ".$stmt->error;
+				$stmt->close();
 				throw new Exception();
 			}
-
-			//更新庫存資料
-			$stmt = $conn->prepare("UPDATE marin_items SET quantity = ? WHERE id = ?");
-			$stmt->bind_param("ii", $newQty, $order_item_id);
-			$stmt->execute();
-			$stmt->close();
 		}
 
 		$conn->commit();
@@ -62,6 +67,17 @@
 		$conn->rollback();
 		$conn->close();
 		header("Location: isFail.php");
+	}
+	catch(Throwable $e){
+		if(!isSet($_SESSION['ERROR_MSG'])){
+			$_SESSION['ERROR_MSG'] = $e->getMessage();
+		}
+		$conn->rollback();
+		$conn->close();
+		header("Location: isFail.php");
+		
+	}
+	finally{
 		exit;
 	}
 ?>
