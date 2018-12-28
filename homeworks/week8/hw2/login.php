@@ -19,22 +19,9 @@
 			$dbPassword = $row['password'];
 			if(password_verify($password, $dbPassword)){
 
-				$tmpId = password_hash(uniqid(rand(mt_srand((double)microtime()*10000)), true), PASSWORD_DEFAULT);
-				$username = $row['username'];
+				$_SESSION["userAccount"] = $row['username'];
+				$_SESSION["nickname"] = (!isset($row['nickname']) || $row['nickname'] === "") ? $row['username'] : $row['nickname'];
 
-				// 先刪除舊有的 session id
-				$stmt = $conn->prepare("DELETE FROM marin_users_certificate WHERE username = ?");
-				$stmt->bind_param("s", $username);
-				$stmt->execute();
-				$stmt->close();
-
-				// 再新增新的 session id
-				$stmt = $conn->prepare("INSERT INTO marin_users_certificate (id, username) VALUES (?, ?)");
-				$stmt->bind_param("ss", $tmpId, $username);
-				$stmt->execute();
-				$stmt->close();
-
-				$_SESSION["tmpId"] = $tmpId;
 				header('Location: index.php');
 			}
 			else{
