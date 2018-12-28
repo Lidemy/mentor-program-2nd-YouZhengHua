@@ -12,22 +12,6 @@
 
 	<?php 
 		require_once('conn.php');
-		$userAccount = null;
-		$nickname = null;
-		if(isset($_SESSION["tmpId"])) {
-			$tmpId = $_SESSION["tmpId"];
-			$stmt = $conn->prepare("SELECT b.* FROM marin_users_certificate a JOIN marin_users b ON a.username = b.username WHERE a.id = ?");
-			$stmt->bind_param("s", $tmpId);
-			$stmt->execute();
-			$certificate = $stmt->get_result();
-			$stmt->close();
-			if($certificate->num_rows === 1){
-				while($certificateRow = $certificate->fetch_assoc()) {
-					$userAccount = $certificateRow['username'];
-					$nickname = $certificateRow['nickname'] === "" ? $userAccount : $certificateRow['nickname'];
-				}
-			}
-		}
 	?>
 </head>
 
@@ -37,7 +21,7 @@
 	<header>
 		<nav class="navbar navbar-expand navbar-dark fixed-top bg-dark">
 			<ul class="navbar-nav">
-			<?php if($userAccount === "") {?>
+			<?php if(!isset($_SESSION["userAccount"])) {?>
 				<li class="nav-item active">
 					<a class="nav-link" href="login.php">登入</a>
 				</li>
@@ -66,14 +50,16 @@
 		<div class="row">
 			<div class="main__from col div-border">
 				<div class="main__nickname">
-					<?php echo $userAccount === "" ? "請先登入" : $nickname; ?>
+					<?php echo isset($_SESSION["userAccount"]) ? $_SESSION["nickname"] : "請先登入"; ?>
 				</div>
 				<div>
 					<textarea class="wt-100" name="contnet" placeholder="留言內容"></textarea>
 				</div>
 				<div>
-				<?php if($userAccount === "") {?>
-					<input class="btn btn-primary btn-lg" type="button" disabled value="請先登入" />
+				<?php if(!isset($_SESSION["userAccount"])) {?>
+					<a href="login.php">
+						<input class="btn btn-primary btn-lg" type="button" value="請先登入" />
+					</a>
 				<?php } else { ?>
 					<input class="btn btn-primary btn-lg" type="button" value="留言">
 				<?php }?>

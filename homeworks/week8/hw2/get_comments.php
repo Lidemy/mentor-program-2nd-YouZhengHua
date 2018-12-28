@@ -24,7 +24,7 @@
 			<div class="main__post__comment--text">
 				<?php echo htmlspecialchars($row['contnet']); ?>
 			</div>
-			<?php if($row['crt_user'] === $userAccount){ ?>
+			<?php if(isset($_SESSION["userAccount"]) && $row['crt_user'] === $_SESSION["userAccount"]){ ?>
 				<div class="postAction">
 					<div class="postAction__edit wt-90">
 						<form action="edit_comments.php" method="POST">
@@ -58,7 +58,7 @@
 						<div class="main__subpost__info--time"><?php echo $subRow['crt_time']; ?></div>
 					</div>
 					<div class="main__subpost__comment--text"><?php echo htmlspecialchars($subRow['contnet']); ?></div>
-					<?php if($subRow['crt_user'] === $userAccount){ ?>
+					<?php if(isset($_SESSION["userAccount"]) && $subRow['crt_user'] === $_SESSION["userAccount"]){ ?>
 						<div class="postAction">
 							<div class="postAction__edit wt-100">
 								<form action="edit_comments.php" method="POST">
@@ -83,16 +83,18 @@
 			?>
 			<div class="main__post__subfrom" style="display: none;">
 				<div class="main__post__subfrom--nickname">
-					<?php echo $userAccount === "" ? "請先登入" : $nickname; ?>
+					<?php echo isset($_SESSION["userAccount"]) ? $_SESSION["nickname"] : "請先登入"; ?>
 				</div>
 				<div>
 					<textarea class="main__post__subfrom--textarea wt-90 margin-bot-10" name="contnet" placeholder="留言內容"></textarea>
 				</div>
 				<div>
 					<?php 
-						if($userAccount === "") {
+						if(!isset($_SESSION["userAccount"])) {
 					?>
-							<input class="btn btn-primary btn-lg" type="button" disabled="true" value="請先登入" />
+							<a href="login.php">
+								<input class="btn btn-primary btn-lg" type="button" value="請先登入" />
+							</a>
 					<?php
 						} else {
 					?>

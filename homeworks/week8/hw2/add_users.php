@@ -6,15 +6,10 @@
 	$stmt = $conn->prepare("INSERT INTO marin_users (username, password, nickname) VALUES (?, ?, ?)");
 	$stmt->bind_param("sss", $userAccount, $password, $nickname);
 	if($stmt->execute()){
-		$tmpId = password_hash(uniqid(rand(mt_srand((double)microtime()*10000)), true), PASSWORD_DEFAULT);
 
-		// 新增新的 session id
-		$stmt = $conn->prepare("INSERT INTO marin_users_certificate (id, username) VALUES (?, ?)");
-		$stmt->bind_param("ss", $tmpId, $userAccount);
-		$stmt->execute();
-		$stmt->close();
+		$_SESSION["userAccount"] = $userAccount;
+		$_SESSION["nickname"] = (!isset($nickname) || $nickname === "") ? $userAccount : $nickname;
 
-		$_SESSION["tmpId"] = $tmpId;
 		header('Location: index.php');
 	}
 	else{
